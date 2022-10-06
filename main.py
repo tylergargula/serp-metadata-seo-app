@@ -16,7 +16,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown("""
-<p class="big-font">Metadata SERP Comparison App</p>
+<p class="big-font">SERP Metadata Comparison App</p>
 <b>Directions: </b></ br><ul>
 <li>Enter Full URL including https or http.</li>
 </ul>
