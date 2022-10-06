@@ -38,7 +38,7 @@ def request_url(input_url):
 
 
 def get_serp(input_url):
-    st.write(f'Gathering SERP data from {input_url} . . .')
+    st.write(f'Gathering SERP data for {input_url} . . .')
     params = {
         'api_key': API_KEY,
         'q': f'site:{input_url}'
