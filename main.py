@@ -18,7 +18,7 @@ st.markdown("""
 st.markdown("""
 <p class="big-font">Metadata SERP Comparison App</p>
 <b>Directions: </b></ br><ul>
-<li>Enter Full URL</li>
+<li>Enter Full URL including https or http.</li>
 </ul>
 <b>Considerations: </b></ br><ul>
 <li>Metadata is scraped from the source HTML document.</li>
