@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 import requests
 import streamlit as st
 from seo_data import SoupData, SerpData
+from fuzzywuzzy import fuzz
 import os
 
 API_KEY = os.environ['SCALE_SERP_KEY']
@@ -56,7 +57,7 @@ def get_serp(input_url):
         print(f"{url} experience an error and may not be indexed in Google")
         serp_description = "Error, URL may not be indexed in Google."
         serp_title = "Error, URL may not be indexed in Google."
-    print(f"SERP Title: {serp_title}\nSERP Description: {serp_description}")
+    # print(f"SERP Title: {serp_title}\nSERP Description: {serp_description}")
     serp_data = SerpData(
         title=serp_title,
         description=serp_description
@@ -81,19 +82,42 @@ def get_soup(input_url):
         title=soup_title,
         description=soup_description
     )
-    print(f"Title: {soup_title}\nDescription: {soup_description}")
+    # print(f"Title: {soup_title}\nDescription: {soup_description}")
     return soup_data
 
 
 def evaluate():
     soup = get_soup(url)
     serp = get_serp(url)
+
+    soup_title = soup.title[0]
+    serp_title = serp.title[0]
+
+    title_compare = fuzz.ratio(soup_title, serp_title)
+    desc_compare = fuzz.ratio(soup.description, serp.description)
+
+    if title_compare >= 90:
+        t_color = '#17B169'
+    elif title_compare >= 70:
+        t_color = '#FEBE10'
+    else:
+        t_color = '#E32636'
+
+    if desc_compare >= 90:
+        d_color = '#17B169'
+    elif desc_compare >= 70:
+        d_color = '#FEBE10'
+    else:
+        d_color = '#E32636'
+
     st.markdown(f"""<br></br>
                                     <h3><b>Results: </b></h3>
-                                    <p>Page Title: {soup.title[0]}</p>
-                                    <p>SERP Title: {serp.title[0]}</p><br></br>
+                                    <p>Page Title: {soup_title}</p>
+                                    <p>SERP Title: {serp_title}</p>
+                                    <h5 style='color: {t_color}'>{title_compare}% Match</h5><br></br>
                                     <p>Page Description: {soup.description}</p>
-                                    <p>SERP Description: {serp.description}</p><br></br>
+                                    <p>SERP Description: {serp.description}</p>
+                                    <h5 style='color: {d_color}'>{desc_compare}% Match</h5><br></br>
 
                                     """, unsafe_allow_html=True)
 
@@ -103,7 +127,7 @@ if url:
         evaluate()
     else:
         st.markdown(f"""<br></br>
-                                    <h5 style="color: red">The URL you entered returned a {request_url(url).status_code} Status Code and cannot be analyzed, try another URL.</b></h5>
+                                    <h5 style="color: #E32636">The URL you entered returned a {request_url(url).status_code} Status Code and cannot be analyzed, try another URL.</b></h5>
                                     """, unsafe_allow_html=True)
 
 st.write('Author: [Tyler Gargula](https://www.tylergargula.dev) | Technical SEO & Software Developer')
